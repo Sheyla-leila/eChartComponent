@@ -24,7 +24,7 @@
  *         }   （该种结构默认对 对象 执行的操作为新增或修改）
  */
 
-export const CUD_Objet = (rowObj: Object, param:any) => {
+export const CUD_Object = (rowObj: Object, param:any) => {
 const operateNameArr = Object.keys(param)
     let changeMap:any = {}
     const isCreate = operateNameArr.includes('create')  // 是否包含新增操作

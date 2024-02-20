@@ -1,7 +1,7 @@
 // geo-地理坐标系组件，用于地图的绘制，支持在地理坐标系上绘制散点图、线集
 // 注意，这里需要用函数的形式，而非一个对象，否则多个地图组件引用的时候，除非深度deep，会污染原始配置，导致A组件修改配置影响到B组件
 
-import { CUD_Objet } from '@/utils/changeObj'
+import { CUD_Object } from '@/utils/changeObj'
 
 /**
  * @cudOperate 增删改操作标志，值为：create、delete、updata，不传默认为修改（updata）
@@ -66,7 +66,7 @@ export const geoOptionItem = (mapInfo?: any) => {
         silent: false // 图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件
     }
 
-    CUD_Objet(geoRowOption, mapInfo)
+    CUD_Object(geoRowOption, mapInfo)
     console.log('geoRowOption',geoRowOption)
     return geoRowOption
 }
