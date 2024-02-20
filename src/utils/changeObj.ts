@@ -2,63 +2,27 @@
 /**
  * 
  * @param rowObj 需要进行操作的原始对象
- * @param changeMap 即将进行修改的属性集合，当操作为增、改时，该集合为键值对集合；当具体操作作为删除时，该集合为key的数组集合
- * @param cudOperate 增删改操作的标志，值为：create、delete、updata，不传默认为修改（updata）
+ * @param param 需要对 对象 进行的操作和相应的数值，结构为
+ *         {
+ *             create: {
+ *                  key1: value1,
+ *                  key2: value2,
+ *                  ...
+ *             },
+ *             updata: {
+ *                  key1: value1,
+ *                  key2: value2,
+ *                  ...
+ *             },
+ *             delete: [key1, key2, ...],
+ *         }
+ *         或者
+ *         {
+ *              key1: value1,
+ *              key2: value2,
+ *              ...
+ *         }   （该种结构默认对 对象 执行的操作为新增或修改）
  */
-export const updataObj = (rowObj: Object, changeMap: any, cudOperate?: String) => {
-    switch(cudOperate) {
-        case 'create':
-            if(changeMap) {
-                // 循环changeMap集合，对集合中的每条数据进行处理
-                for(const key in changeMap) {
-                    let temp = rowObj
-                    const keyArr = key?.split('.')      // 用于分割字符串中的每个属性名称
-                    keyArr?.forEach?.((element:string) => {
-                        temp = temp[element]
-                    })
-                    temp = changeMap[key]
-                }
-            }
-            break;
-        case 'delete':
-            if(changeMap) {
-                changeMap?.forEach?.((keyName:any) => {
-                    let temp = rowObj
-                    const keyArr = keyName?.split('.')      // 用于分割字符串中的每个属性名称
-                    keyArr?.forEach?.((element:string, index:number) => {
-                        if(index < keyArr?.length -1) {
-                            // 当找到最内层属性值后，temp记录的为字符串，此时修改值无法对原始对象进行修改，因此需要保留temp的对象结构，于是需要寻找最内层属性的上一层属性
-                            // eg：修改option.lable.color，如果寻找到最内层属性，此时temp = '#FFFFFF'，而上一层属性时。temp = {color: '#FFFFFF}，此时temp记录的是option这个对象下color对象的地址，此时进行修改，是对option原始对象的修改
-                            temp = temp[element]        // 一层一层寻找并记录下一层属性值
-                        } else {
-                            delete temp[element]  // 找到最内层属性后删除
-                        }
-                    })
-                });
-
-            }
-            break;
-        case 'updata':
-        default:
-            if(changeMap) {
-                // 循环changeMap集合，对集合中的每条数据进行处理
-                for(const key in changeMap) {
-                    let temp = rowObj
-                    const keyArr = key?.split('.')      // 用于分割字符串中的每个属性名称
-                    keyArr?.forEach?.((element:string, index:number) => {
-                        if(index < keyArr?.length -1) {
-                            // 当找到最内层属性值后，temp记录的为字符串，此时修改值无法对原始对象进行修改，因此需要保留temp的对象结构，于是需要寻找最内层属性的上一层属性
-                            // eg：修改option.lable.color，如果寻找到最内层属性，此时temp = '#FFFFFF'，而上一层属性时。temp = {color: '#FFFFFF}，此时temp记录的是option这个对象下color对象的地址，此时进行修改，是对option原始对象的修改
-                            temp = temp[element]        // 一层一层寻找并记录下一层属性值
-                        } else {
-                            temp[element] = changeMap[key]  // 找到最内层属性后赋值
-                        }
-                    })
-                }
-            }
-            break;
-    }
-}
 
 export const CUD_Objet = (rowObj: Object, param:any) => {
 const operateNameArr = Object.keys(param)
@@ -70,6 +34,7 @@ const operateNameArr = Object.keys(param)
     const ObjDepth = countObjLevel(param)   // 判断传入对象的深度
     const operateArr = ['create', 'delete', 'updata']
     if(ObjDepth === 2) {
+        // 当对象有两层深度时，说明结构为{操作类型-操作数据集合}，在该种情况下，若key不为operateArr数组中的任一项，则不支持该操作，一般是拼写错误，可以进行提示
         operateNameArr?.forEach?.((keyName: string) => {
             if(!operateArr.includes(keyName)){
                 console.log(`不支持${keyName}操作，请检查拼写`)
