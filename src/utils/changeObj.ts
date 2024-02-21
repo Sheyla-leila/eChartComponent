@@ -1,6 +1,12 @@
 // 本文件的函数用于对跨级对象进行增删
 /**
- * 
+ * 思路：
+ *      1. 获取传入对象的第一层的key值，通过该key值判断执行增删改的何种操作：
+ *              1.1 create：新增
+ *              1.2 updata: 修改
+ *              1.3 delete：删除
+ *              1.4 除上述三种外的字符串：默认为新增 || 修改
+ *      2. 通过key确定操作后，根据其对应的value修改原始对象
  * @param rowObj 需要进行操作的原始对象
  * @param param 需要对 对象 进行的操作和相应的数值，结构为
  *         {
@@ -24,9 +30,11 @@
  *         }   （该种结构默认对 对象 执行的操作为新增或修改）
  */
 
-export const CUD_Object = (rowObj: Object, param:any) => {
-const operateNameArr = Object.keys(param)
-    let changeMap:any = {}
+// jq.create({'a.b',{abcd:}}).delete
+export const CUD_Object = (rowObj: Object, param: any) => {
+
+    const operateNameArr = Object.keys(param)
+    let changeMap: any = {}
     const isCreate = operateNameArr.includes('create')  // 是否包含新增操作
     const isDelete = operateNameArr.includes('delete')  // 是否包含删除操作
     const isUpdata = operateNameArr.includes('updata')  // 是否包含修改操作
@@ -34,10 +42,10 @@ const operateNameArr = Object.keys(param)
     const ObjDepth = countObjLevel(param)   // 判断传入对象的深度
     const operateArr = ['create', 'delete', 'updata']
     if(ObjDepth === 2) {
-        // 当对象有两层深度时，说明结构为{操作类型-操作数据集合}，在该种情况下，若key不为operateArr数组中的任一项，则不支持该操作，一般是拼写错误，可以进行提示
+        // 当对象有两层深度时，说明结构为{操作类型-操作数据集合}，在该种情况下，若key不为operateArr数组中的任一项，则不支持该操作，一般是拼写错误，因此进行提示
         operateNameArr?.forEach?.((keyName: string) => {
             if(!operateArr.includes(keyName)){
-                console.log(`不支持${keyName}操作，请检查拼写`)
+                console.error(`不支持${keyName}操作，请检查拼写`)
             } 
         })
     }
@@ -91,15 +99,15 @@ const operateNameArr = Object.keys(param)
 }
 
 // 此处用于计算对象的层数，后续需要进行晚上，以达到判断任意一个变量是否为空
-export const countObjLevel = (obj:any) => {
+export const countObjLevel = (obj: any) => {
     let level = 1;// 初始对象的层数
     let objValue = Object.values(obj);
-    for (let i = 0; i < objValue.length; i++) {
-    if (typeof objValue[i] == 'object') {
-        if (!Array.isArray(objValue[i])) {
-        return countObjLevel(objValue[i]) + 1;
+    for (let i = 0; i < objValue?.length; i++) {
+        if (typeof objValue[i] == 'object') {
+            if (!Array.isArray(objValue[i])) {
+                return countObjLevel(objValue[i]) + 1;
+            }
         }
-    }
     }
     return level;
 }

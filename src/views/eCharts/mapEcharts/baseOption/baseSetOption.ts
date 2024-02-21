@@ -1,16 +1,7 @@
-// geo-地理坐标系组件，用于地图的绘制，支持在地理坐标系上绘制散点图、线集
-// 注意，这里需要用函数的形式，而非一个对象，否则多个地图组件引用的时候，除非深度deep，会污染原始配置，导致A组件修改配置影响到B组件
-
-import { CUD_Object } from '@/utils/changeObj'
-
-/**
- * @cudOperate 增删改操作标志，值为：create、delete、updata，不传默认为修改（updata）
- * @map 当具体操作为增、改时，该集合为键值对集合；当具体操作为删除时，该集合为key的数组集合
- */
-export const geoOptionItem = (mapInfo?: any) => {
-    // geoRowOption为地理坐标系的基础配置
-
-    const geoRowOption = {
+// 所有基础项配置
+export const baseSetOption = {
+    // geo-地理坐标系组件，用于地图的绘制，支持在地理坐标系上绘制散点图、线集
+    geoRowOption: {
         show: true, // 是否显示地理坐标系组件
         map: 'china', // 需要和使用 registerMap 时注册的地图名称相同，否则无法正常渲染地图
         scaleLimit: {
@@ -65,8 +56,4 @@ export const geoOptionItem = (mapInfo?: any) => {
         ],
         silent: false // 图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件
     }
-
-    if(mapInfo) CUD_Object(geoRowOption, mapInfo)
-    // console.log('geoRowOption',geoRowOption)
-    return geoRowOption
 }

@@ -45,10 +45,11 @@ onMounted(() => {
         geo: geoOptionItem(
             {
                 updata: {
-                    'emphasis.label.color': 'red'
+                    'emphasis.label.color': '#A6D4CC',
                 },
                 create: {
                     'itemStyle.borderWidth' : 2,
+                    'label.fontSize': 18,
                 },
                 delete: ['itemStyle.borderType']
             }
